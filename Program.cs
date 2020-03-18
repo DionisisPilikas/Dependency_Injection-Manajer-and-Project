@@ -15,30 +15,43 @@ namespace Dependency_Injection
 {
     class Program
     {
-        class Manager
+        interface IEvaluation 
+        {
+            //Evaluation Method (void)
+            void ManagerEvaluation();
+            //Get value Method (return the value typed double)
+            double GetProjectValue();
+        }
+        class Manager : IEvaluation
         {
             public string Name { get; set; }
-            public Project project;
+            public IEvaluation _ievaluation;
 
-            public Manager(string name, Project prj)
+            //Constructor - Dependency_Injection (interface IEvaluation)
+            public Manager(string name, IEvaluation ievaluation)
             {
                 Name = name;
-                project = prj;
+                this._ievaluation = ievaluation;
             }
+            //Evaluation Method (void)
             public void ManagerEvaluation()
             {
-                Console.WriteLine(this.project.ValueOfProject > 0 ? this.Name + " is successful" : this.Name + " is not successful");
-                //if (this.project.ValueOfProject > 0)
-                //{
-                //    Console.WriteLine(this.Name + " is successful");
-                //}
-                //else
-                //{
-                //    Console.WriteLine(this.Name + " is not successful");
-                //}
+                if (this._ievaluation.GetProjectValue() > 0)
+                {
+                    Console.WriteLine(this.Name + " is successful");
+                }
+                else
+                {
+                    Console.WriteLine(this.Name + " is not successful");
+                }
+            }
+            //Get value Method (return the value typed double)
+            public double GetProjectValue()
+            {
+                return this._ievaluation.GetProjectValue();
             }
         }
-        class Project
+        class Project :IEvaluation
         {
             public string Title { get; set; }
             public double ValueOfProject { get; set; }
@@ -47,11 +60,20 @@ namespace Dependency_Injection
                 Title = title;
                 ValueOfProject = valueOfProject;
             }
+            public void ManagerEvaluation()
+            {
+                throw new NotImplementedException();
+            }
+            //Get value Method (return the value typed double)
+            public double GetProjectValue()
+            {
+                return this.ValueOfProject;
+            }
         }
         static void Main(string[] args)
         {
-            Project p1 = new Project("JAVA_Project", 2.3D);  //value is 2.3, so Manager is successful
-            Manager m1 = new Manager("Panos", p1);
+            IEvaluation p1 = new Project("JAVA_Project", 2.3D); //value is 2.3, so Manager is successful
+            Manager m1 = new Manager("Manos", p1);
             m1.ManagerEvaluation();
             Console.ReadKey();
         }
